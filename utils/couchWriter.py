@@ -9,7 +9,7 @@ class couchWriter:
     oh my god
     """
 
-    def __init__(self,server='http://admin:Bluboi314!@127.0.0.1:5984/'):
+    def __init__(self,server='http://user:password@127.0.0.1:5984/'):
         self.server = server
 
 
