@@ -1,5 +1,5 @@
 import requests
-
+import time
 
 class tweetFetcher:
     """
@@ -21,11 +21,21 @@ class tweetFetcher:
         self.headers = headers
         self.url = 'https://api.twitter.com/2/users/{}/tweets?'.format(userid)
 
-    def fetch_tweets_since(self, tweetid=None):
+    def fetch_tweets_upto(self, tweetid=None):
+        """
+        makes https request to twitter api v2 endpoint /users/USER/tweets
+        where USER is the userid inherited from tweetFetcher
+        :param tweetid: tweet id to get texts up until
+        :return: {
+            'response': json response of the request
+            'oldestid':oldest id in the response for use in recursive requests
+        }
+        """
 
+        # if tweetid is given, we add the until parameter #
         if tweetid:
-            url = self.url + 'until_id='.format(str(tweetid))
-
+            url = self.url + 'until_id={}'.format(str(tweetid))
+        # gets left bare, else #
         else:
             url = self.url
 
@@ -34,14 +44,30 @@ class tweetFetcher:
                                     headers=self.headers,
                                     data=self.payload)
 
-        if str(response.status_code) != '200':
-            print('Unsuccessful response. Code:{}'.format(str(response.code)))
-            print('!----------------------------------!')
-            print(response.text)
-            raise EOFError
-        else:
+        if str(response.status_code)=='200':
 
             return {
                 'response': response.json()['data'],
                 'oldestid': response.json()['meta']['oldest_id']
             }
+
+        # adding this to handle api metering #
+        elif str(response.status_code)=='429':
+            print('request limit reached')
+            time.sleep(15*60) # sleep for 15 minutes to rest the window
+            response = requests.request("GET",
+                                    url,
+                                    headers=self.headers,
+                                    data=self.payload)
+
+            return {
+                'response': response.json()['data'],
+                'oldestid': response.json()['meta']['oldest_id']
+            }
+
+        else:
+
+            print('Unsuccessful response. Code:{}'.format(str(response.status_code)))
+            print('!----------------------------------!')
+            print(response.text)
+            raise Exception
