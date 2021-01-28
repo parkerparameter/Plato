@@ -12,7 +12,7 @@ class tweetFetcher:
                  userid,
                  payload={},
                  headers={
-                     'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAAEhtMAEAAAAAHfK0FC55xEmzHqWJBiFsrltb%2Fko%3DV7T7qccL9QQM17H2qZFqjeiySOmNi9q5bQzdUggSPIvZUDVgyG',
+                     'Authorization': 'Bearer PUTINYOUROWNBEARERTOKENFROMDEVELOPER.TWITTER.COMHEREITSREALLYABOUTTHISLONG',
                      'Cookie': 'guest_id=v1%3A161159767509161000; personalization_id="v1_kgQY5ZcY+Qo7QzTK1th10Q=="'
                  }
                  ):
